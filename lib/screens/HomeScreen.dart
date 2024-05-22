@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:todo/providers/todo_provider.dart';
 import 'package:todo/screens/todo_detail_screen.dart';
 
+import '../widgets/todo_item.dart';
+import 'add_todo_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -20,16 +23,24 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('TODO List'),
       ),
       body: ListView.builder(
-          itemCount: todoProvider.todos.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Get.to(
-                  TodoDetailScreen(todo: todoProvider.todos[index]),
-                );
-              },
-            );
-          }),
+        itemCount: todoProvider.todos.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Get.to(
+                TodoDetailScreen(todo: todoProvider.todos[index]),
+              );
+            },
+            child: TodoItem(todo: todoProvider.todos[index]),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(const AddTodoScreen());
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
