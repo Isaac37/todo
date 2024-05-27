@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/models/todo_model.dart';
 import 'package:todo/providers/todo_provider.dart';
@@ -18,6 +19,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   final _dueDateController = TextEditingController();
   final _priorityController = TextEditingController();
   final _estimatedDurationController = TextEditingController();
+  DateTime? _selectedDueDate;
 
   @override
   void dispose() {
@@ -29,24 +31,38 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     super.dispose();
   }
 
+  Future<void> _selectDueDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDueDate)
+      setState(() {
+        _selectedDueDate = picked;
+      });
+  }
+
   void _saveForm() {
-    if (_formKey.currentState!.validate()) {
-      final String id = const Uuid().v4();
-      final String title = _titleController.text;
-      final String description = _descriptionController.text;
-      final DateTime dueDate = DateTime.parse(_dueDateController.text);
-
-      final Todo newTodo = Todo(
-        id: id,
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        isCompleted: false,
-      );
-
-      Provider.of<TodoProvider>(context, listen: false).addTodo(newTodo);
-      Navigator.pop(context);
+    if (_titleController.text.isEmpty || _selectedDueDate == null) {
+      return;
     }
+    final String id = const Uuid().v4();
+    final String title = _titleController.text;
+    final String description = _descriptionController.text;
+    final DateTime dueDate = _selectedDueDate!;
+
+    final Todo newTodo = Todo(
+      id: id,
+      title: title,
+      description: description,
+      dueDate: dueDate,
+      isCompleted: false,
+    );
+
+    Provider.of<TodoProvider>(context, listen: false).addTodo(newTodo);
+    Navigator.pop(context);
   }
 
   @override
@@ -73,15 +89,31 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
             const SizedBox(
               height: 10,
             ),
-            TextField(
-              controller: _dueDateController,
-              decoration:
-                  const InputDecoration(labelText: 'Due Date (YYYY-MM-DD)'),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    _selectedDueDate == null
+                        ? 'No Date Chosen!'
+                        : 'Due Date: ${DateFormat('yyyy-MM-dd').format(_selectedDueDate!)}',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => _selectDueDate(context),
+                  child: Text('Choose Date'),
+                ),
+              ],
             ),
+            SizedBox(height: 20),
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(onPressed: () {}, child: const Text('Add Todo'))
+            ElevatedButton(
+                onPressed: () {
+                  _saveForm();
+                },
+                child: const Text('Add Todo'))
           ],
         ),
       ),

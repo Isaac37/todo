@@ -10,24 +10,35 @@ class TodoDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(todo.title),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Tittle: ${todo.title}',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: SizedBox(
+          height: 170,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 17.0, left: 14, right: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Tittle: ${todo.title}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Description: ${todo.description}',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Completed?: ${todo.isCompleted ? "Yes" : "No"}',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 10),
-          Text(
-            'Tittle: ${todo.description}',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Tittle: ${todo.isCompleted ? "Yes" : "No"}',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          ),
-        ],
+        ),
       ),
     );
   }

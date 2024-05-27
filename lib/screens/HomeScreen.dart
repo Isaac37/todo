@@ -37,7 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(const AddTodoScreen());
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddTodoScreen()),
+          );
         },
         child: const Icon(Icons.add),
       ),
