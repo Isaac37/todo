@@ -5,17 +5,26 @@ import '../models/todo_model.dart';
 
 class TodoProvider with ChangeNotifier {
   List<Todo> _todos = [];
+  List<Todo> _completedTodos = [];
 
   List<Todo> get todos => _todos;
+  List<Todo> get completedTodos => _completedTodos;
 
   Future<void> loadTodos() async {
     _todos = await DbService().fetchTodos();
+    _completedTodos = _todos.where((todo) => !todo.isCompleted).toList();
+    _todos = _todos.where((todo) => !todo.isCompleted).toList();
     notifyListeners();
   }
 
   Future<void> addTodo(Todo todo) async {
     await DbService().insertTodo(todo);
-    _todos.add(todo);
+
+    if (todo.isCompleted) {
+      _completedTodos.add(todo);
+    } else {
+      _todos.add(todo);
+    }
     notifyListeners();
   }
 
